@@ -1,5 +1,5 @@
 """
-Embedding backend 2: Dense Passage Retrieval (DPR).
+Embedding backend: Dense Passage Retrieval (DPR).
 
 Unlike a general-purpose language model, DPR uses two separate encoders
 trained specifically for retrieval: one for passages/contexts,
