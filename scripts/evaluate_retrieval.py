@@ -2,9 +2,8 @@
 Retrieval evaluation harness.
 
 Runs a fixed set of test questions, each with a manually-labeled keyword
-that should appear in a correctly-retrieved passage, against both
-embedder backends. Reports Hit Rate@k and Mean Reciprocal Rank (MRR) so
-"BERT vs DPR" is backed by numbers instead of a vibe.
+that should appear in a correctly-retrieved passage using DPR. Reports
+Hit Rate@k and Mean Reciprocal Rank (MRR) as a retrieval-quality check.
 
 Usage:
     python scripts/evaluate_retrieval.py
@@ -15,7 +14,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.embeddings_bert import BertMeanPoolingEmbedder
 from src.embeddings_dpr import DPREmbedder
 from src.retrieval import Retriever
 
@@ -69,11 +67,8 @@ def evaluate(embedder_name: str, embedder, k: int = 5) -> dict:
 def main():
     print(f"Running retrieval evaluation on {len(TEST_CASES)} labeled test questions...\n")
 
-    results = []
-    for name, embedder_cls in [("bert", BertMeanPoolingEmbedder), ("dpr", DPREmbedder)]:
-        print(f"Evaluating '{name}' embedder...")
-        embedder = embedder_cls()
-        results.append(evaluate(name, embedder))
+    print("Evaluating 'dpr' embedder...")
+    results = [evaluate("dpr", DPREmbedder())]
 
     print("\n" + "=" * 60)
     print(f"{'Embedder':<12}{'Hit Rate@5':<15}{'MRR':<10}")

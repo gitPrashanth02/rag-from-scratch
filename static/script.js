@@ -5,32 +5,14 @@
   const questionInput = document.getElementById("question");
   const submitBtn = document.getElementById("submit-btn");
   const formHint = document.getElementById("form-hint");
-  const toggleButtons = document.querySelectorAll(".toggle-btn");
-
   const resultsSection = document.getElementById("results");
-  const answerWithoutEl = document.getElementById("answer-without");
   const answerWithEl = document.getElementById("answer-with");
-  const timeWithoutEl = document.getElementById("time-without");
-  const timeWithEl = document.getElementById("time-with");
+  const timeGenerationEl = document.getElementById("time-generation");
   const scopeListEl = document.getElementById("scope-list");
   const scopeEmbedderLabel = document.getElementById("scope-embedder-label");
 
   const errorBanner = document.getElementById("error-banner");
   const errorDetail = document.getElementById("error-detail");
-
-  let selectedEmbedder = "bert";
-
-  toggleButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      toggleButtons.forEach((b) => {
-        b.classList.remove("is-active");
-        b.setAttribute("aria-checked", "false");
-      });
-      btn.classList.add("is-active");
-      btn.setAttribute("aria-checked", "true");
-      selectedEmbedder = btn.dataset.embedder;
-    });
-  });
 
   function setLoading(isLoading) {
     submitBtn.disabled = isLoading;
@@ -102,7 +84,7 @@
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, embedder: selectedEmbedder, top_k: 5 }),
+        body: JSON.stringify({ question, embedder: "dpr", top_k: 5 }),
       });
 
       const data = await response.json();
@@ -112,10 +94,8 @@
         return;
       }
 
-      answerWithoutEl.textContent = data.answer_without_retrieval;
       answerWithEl.textContent = data.answer_with_retrieval;
-      timeWithoutEl.textContent = `${data.timing_seconds.generation_without_retrieval}s`;
-      timeWithEl.textContent = `${data.timing_seconds.generation_with_retrieval}s (+${data.timing_seconds.retrieval}s retrieval)`;
+      timeGenerationEl.textContent = `${data.timing_seconds.generation}s (+${data.timing_seconds.retrieval}s retrieval)`;
       scopeEmbedderLabel.textContent = `${data.embedder} · top ${data.retrieved_chunks.length}`;
       renderScope(data.retrieved_chunks);
 

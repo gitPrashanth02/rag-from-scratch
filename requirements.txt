@@ -4,3 +4,5 @@ transformers>=4.40.0
 faiss-cpu>=1.8.0
 numpy>=1.25.0
 pytest>=8.0.0
+langchain_text_splitters>=0.1.0
+langchain>=1.0.0

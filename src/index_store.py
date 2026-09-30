@@ -2,7 +2,7 @@
 Thin wrapper around a FAISS flat L2 index, with disk caching.
 
 Re-embedding the whole corpus on every process start is wasteful and
-slow (BERT/DPR forward passes aren't free). This caches the built index
+slow (DPR forward passes aren't free). This caches the built index
 and the paragraph list together, keyed by embedder name, so subsequent
 runs load instantly unless the corpus or embedder changes.
 """

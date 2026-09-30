@@ -21,9 +21,11 @@ class FakeEmbedder:
 def corpus_file(tmp_path):
     corpus = tmp_path / "corpus.txt"
     corpus.write_text(
-        "Paragraph about cats and their behavior in the wild outdoors.\n\n"
-        "Paragraph about dogs and how they are trained for service work.\n\n"
-        "Paragraph about retrieval augmented generation and vector search."
+        ("Paragraph about cats and their behavior in the wild outdoors. " * 10).strip()
+        + "\n\n"
+        + ("Paragraph about dogs and how they are trained for service work. " * 10).strip()
+        + "\n\n"
+        + ("Paragraph about retrieval augmented generation and vector search. " * 10).strip()
     )
     return corpus
 
@@ -35,7 +37,7 @@ def _to_array(embedder_output):
 
 class NumpyFakeEmbedder(FakeEmbedder):
     """Same as FakeEmbedder but returns real numpy arrays, matching what
-    the real BERT/DPR embedders return."""
+    the real DPR embedder returns."""
 
     def encode(self, texts):
         return _to_array(super().encode(texts))
@@ -75,7 +77,7 @@ def test_rebuild_forces_reindex(tmp_path, corpus_file):
     original_count = len(retriever.index.paragraphs)
 
     with open(corpus_file, "a") as f:
-        f.write("\n\nA brand new paragraph that was not there before this edit.")
+        f.write("\n\n" + "A brand new paragraph that was not there before this edit. " * 20)
 
     retriever.rebuild()
-    assert len(retriever.index.paragraphs) == original_count + 1
+    assert len(retriever.index.paragraphs) > original_count

@@ -1,12 +1,12 @@
 """
 Embedding backend 2: Dense Passage Retrieval (DPR).
 
-Unlike the plain BERT mean-pooling approach, DPR uses two separate
-encoders trained specifically for retrieval: one for passages/contexts,
+Unlike a general-purpose language model, DPR uses two separate encoders
+trained specifically for retrieval: one for passages/contexts,
 one for questions, projected into a shared embedding space via their
 pooled [CLS] output. This is what real production retrieval systems
-are closer to, which is why it's worth comparing against the
-from-scratch BERT approach rather than just picking one.
+are closer to, which makes it a practical retrieval-focused embedding
+backend for this project.
 """
 
 from typing import List

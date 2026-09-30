@@ -1,8 +1,5 @@
 """
-Generation layer: produces an answer either purely from the language
-model's parametric memory (no retrieval) or grounded in retrieved
-context (RAG). Comparing these two side by side is the entire point
-of this project's demo.
+Generation layer: produces answers grounded in retrieved context (RAG).
 
 GPT-2 is used deliberately instead of a hosted API model: it runs
 fully offline/on-CPU with no API key, which keeps this project
@@ -55,12 +52,6 @@ class Generator:
             skip_special_tokens=True,
         )
         return generated.strip()
-
-    def answer_without_retrieval(self, question: str) -> str:
-        """Answer using only the model's parametric knowledge -- no context."""
-        prompt = f"Question: {question}\nAnswer:"
-        answer = self._generate(prompt)
-        return answer or "(model produced no output)"
 
     def answer_with_retrieval(self, question: str, context_chunks: list[str]) -> str:
         """Answer grounded in retrieved context chunks (standard RAG prompting)."""

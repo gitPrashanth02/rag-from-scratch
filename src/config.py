@@ -18,10 +18,7 @@ CORPUS_PATH: Path = Path(
     os.getenv("RAG_CORPUS_PATH", str(DATA_DIR / "corpus.txt")))
 
 # --- Embedding models ----------------------------------------------------
-# Two interchangeable embedding backends, matching the two approaches
-# used in the source material: a plain BERT mean-pooled embedding, and
-# a DPR (Dense Passage Retrieval) dual-encoder embedding.
-BERT_MODEL_NAME: str = os.getenv("BERT_MODEL_NAME", "bert-base-uncased")
+# DPR (Dense Passage Retrieval) uses separate context and question encoders.
 DPR_CONTEXT_MODEL_NAME: str = os.getenv(
     "DPR_CONTEXT_MODEL_NAME", "facebook/dpr-ctx_encoder-single-nq-base"
 )

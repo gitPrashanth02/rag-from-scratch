@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 pipeline = RagPipeline()
 
-VALID_EMBEDDERS = {"bert", "dpr"}
+VALID_EMBEDDERS = {"dpr"}
 
 
 @app.route("/")
@@ -44,7 +44,7 @@ def health():
 def ask():
     payload = request.get_json(silent=True) or {}
     question = payload.get("question", "")
-    embedder_name = payload.get("embedder", "bert")
+    embedder_name = payload.get("embedder", "dpr")
     k = payload.get("top_k", 5)
 
     if not isinstance(question, str) or not question.strip():

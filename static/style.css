@@ -69,7 +69,7 @@ a { color: var(--accent); }
   padding: 20px 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
 }
 .brand { display: flex; align-items: center; gap: 12px; }
@@ -179,41 +179,6 @@ textarea:focus-visible {
   flex-wrap: wrap;
 }
 
-.embedder-toggle {
-  display: inline-flex;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 3px;
-  gap: 3px;
-}
-.toggle-btn {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-dim);
-  background: transparent;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 14px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
-  transition: background 0.15s, color 0.15s;
-}
-.toggle-btn:hover { color: var(--text); }
-.toggle-btn.is-active {
-  background: var(--accent-dim);
-  color: #fff;
-}
-.toggle-sub {
-  font-size: 10.5px;
-  color: var(--text-faint);
-  font-weight: 400;
-}
-.toggle-btn.is-active .toggle-sub { color: rgba(255,255,255,0.65); }
-
 .submit-btn {
   font-family: var(--font-body);
   font-weight: 600;
@@ -261,12 +226,9 @@ textarea:focus-visible {
 
 .results-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   margin-bottom: 24px;
-}
-@media (max-width: 720px) {
-  .results-grid { grid-template-columns: 1fr; }
 }
 
 .answer-card {
@@ -274,9 +236,8 @@ textarea:focus-visible {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px 22px;
-  border-top: 3px solid var(--ungrounded);
+  border-top: 3px solid var(--grounded);
 }
-.answer-card--grounded { border-top-color: var(--grounded); }
 
 .card-head {
   display: flex;
@@ -290,9 +251,8 @@ textarea:focus-visible {
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--ungrounded);
+  color: var(--grounded);
 }
-.answer-card--grounded .card-tag { color: var(--grounded); }
 
 .card-time {
   font-family: var(--font-mono);

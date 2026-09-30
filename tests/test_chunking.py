@@ -12,7 +12,7 @@ def test_read_and_split_text_returns_paragraphs(tmp_path):
         "This is the third and final paragraph in the test corpus."
     )
 
-    paragraphs = read_and_split_text(corpus, min_chars=20)
+    paragraphs = read_and_split_text(corpus, min_chars=20, chunk_size=60, chunk_overlap=0)
 
     assert len(paragraphs) == 3
     assert "first paragraph" in paragraphs[0]
