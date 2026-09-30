@@ -2,7 +2,7 @@
 
 **A retrieval-augmented generation engine built without LangChain or any retrieval framework** — embeddings, FAISS indexing, and generation are all implemented directly with PyTorch and Hugging Face Transformers, so every step of the RAG pipeline is visible and explainable rather than hidden behind a library call.
 
-The demo answers questions about my own coursework and projects (the corpus is my IBM Generative AI Engineering certificate content + my other portfolio projects), and shows **two answers side by side**: one generated with no external context, and one generated after retrieving relevant passages. The gap between them is the entire point of RAG.
+The demo answers questions about my own coursework and projects (the corpus is my IBM Generative AI Engineering certificate content + my other portfolio projects). It retrieves relevant passages and uses them to ground each answer.
 
 > This is a companion piece to a second project, **[Multi-Tool RAG Agent](#)**, which builds on top of a framework (LangChain) instead of from scratch. Together they show both "I understand the internals" and "I can ship a framework-based application."
 
@@ -12,9 +12,9 @@ The demo answers questions about my own coursework and projects (the corpus is m
 
 Anyone can call `VectorStoreQA.from_chain_type(...)`. This project exists to demonstrate the layer underneath that call:
 
-- How raw text becomes a fixed-size vector (mean-pooled BERT vs. a purpose-built DPR dual-encoder)
+- How raw text becomes a fixed-size vector using a purpose-built DPR dual-encoder
 - How a FAISS index actually performs nearest-neighbor search
-- How retrieved context changes what a language model generates, measured, not assumed
+- How retrieved passages are used to ground a generated answer
 
 ## Architecture
 
@@ -22,7 +22,7 @@ Anyone can call `VectorStoreQA.from_chain_type(...)`. This project exists to dem
 flowchart LR
     subgraph Ingest
         A[corpus.txt] --> B[Chunking<br/>paragraph split + clean]
-        B --> C[Embedder<br/>BERT mean-pool OR DPR]
+        B --> C[Embedder<br/>DPR dual-encoder]
         C --> D[(FAISS Index<br/>cached to disk)]
     end
 
@@ -31,12 +31,12 @@ flowchart LR
         E --> F[FAISS search<br/>top-k nearest]
         D -.-> F
         F --> G[Retrieved passages]
-        Q --> H[Generator: GPT-2<br/>no context]
-        G --> I[Generator: GPT-2<br/>+ retrieved context]
-        H --> J[Answer without retrieval]
-        I --> K[Answer with retrieval]
+        G --> H[Generator: GPT-2<br/>+ retrieved context]
+        H --> I[Grounded answer]
     end
 ```
+
+For each question, the app returns one GPT-2 answer generated from the retrieved passages, the passages and their distances, and retrieval and generation timings.
 
 ## Project structure
 
@@ -46,14 +46,13 @@ rag-from-scratch/
 ├── src/
 │   ├── config.py                 # All model names, paths, hyperparameters
 │   ├── chunking.py                # corpus.txt -> clean paragraph chunks
-│   ├── embeddings_bert.py         # Backend 1: BERT mean-pooling embedder
-│   ├── embeddings_dpr.py          # Backend 2: DPR dual-encoder embedder
+│   ├── embeddings_dpr.py          # DPR dual-encoder embedder
 │   ├── index_store.py             # FAISS index wrapper, with save/load caching
 │   ├── retrieval.py                # Ties embedder + index together
-│   ├── generation.py               # GPT-2 generation, with/without context
+│   ├── generation.py               # GPT-2 generation grounded in retrieved context
 │   └── pipeline.py                  # Top-level orchestrator used by Flask
 ├── scripts/
-│   └── evaluate_retrieval.py        # Hit Rate@k / MRR eval, BERT vs DPR
+│   └── evaluate_retrieval.py        # DPR Hit Rate@k / MRR evaluation
 ├── tests/                            # pytest suite (offline, no model downloads)
 ├── templates/index.html               # Frontend markup
 ├── static/style.css, script.js         # Frontend styling + behavior
@@ -83,7 +82,7 @@ Open `http://localhost:5000`. The first question you ask will take longer (model
 python3 scripts/evaluate_retrieval.py
 ```
 
-This runs 12 labeled test questions against both embedder backends and reports **Hit Rate@5** and **Mean Reciprocal Rank (MRR)** — see the script for the exact methodology. This is what backs up "BERT vs. DPR" with numbers instead of a guess.
+This runs 12 labeled test questions against DPR and reports **Hit Rate@5** and **Mean Reciprocal Rank (MRR)** — see the script for the exact methodology.
 
 ## Running the tests
 
@@ -109,7 +108,7 @@ Being upfront about this is more useful than pretending this is a production sys
 
 - Tokenization, embeddings, and attention mechanisms (from the IBM Generative AI Engineering coursework this project is built on)
 - Retrieval-augmented generation implemented at the mechanics level, not just via a framework
-- Comparative evaluation methodology (Hit Rate, MRR) rather than anecdotal "it seems to work"
+- Retrieval evaluation methodology (Hit Rate, MRR) rather than anecdotal "it seems to work"
 - A complete, tested, documented full-stack deliverable: backend, frontend, tests, evaluation, and deployment-readiness
 
 ---
