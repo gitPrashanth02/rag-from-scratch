@@ -1,6 +1,6 @@
 """
 Retrieval orchestration: builds (or loads) a FAISS index for a given
-embedder, and exposes a simple `retrieve(query, k)` interface.
+embedder, and exposes a simple retrieve(query, k) interface.
 
 This is the layer that the Flask app and eval script actually talk to --
 they shouldn't need to know about FAISS, tokenizers, or caching details.
