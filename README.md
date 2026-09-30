@@ -51,8 +51,6 @@ rag-from-scratch/
 │   ├── retrieval.py                # Ties embedder + index together
 │   ├── generation.py               # GPT-2 generation grounded in retrieved context
 │   └── pipeline.py                  # Top-level orchestrator used by Flask
-├── scripts/
-│   └── evaluate_retrieval.py        # DPR Hit Rate@k / MRR evaluation
 ├── tests/                            # pytest suite (offline, no model downloads)
 ├── templates/index.html               # Frontend markup
 ├── static/style.css, script.js         # Frontend styling + behavior
@@ -76,21 +74,13 @@ python3 app.py
 
 Open `http://localhost:5000`. The first question you ask will take longer (models load + index builds); every question after that is fast.
 
-## Running the retrieval evaluation
-
-```bash
-python3 scripts/evaluate_retrieval.py
-```
-
-This runs 12 labeled test questions against DPR and reports **Hit Rate@5** and **Mean Reciprocal Rank (MRR)** — see the script for the exact methodology.
-
 ## Running the tests
 
 ```bash
 pytest tests/ -v
 ```
 
-The test suite uses a fake embedder (deterministic, no model download) so it runs in seconds and works offline — it tests the chunking, indexing, and retrieval *logic*, not the specific embedding model's quality (that's what the evaluation script is for).
+The test suite uses a fake embedder (deterministic, no model download) so it runs in seconds and works offline. It tests the chunking, indexing, retrieval, and pipeline logic without loading model weights.
 
 ## Design decisions & tradeoffs
 
@@ -108,9 +98,9 @@ Being upfront about this is more useful than pretending this is a production sys
 
 - Tokenization, embeddings, and attention mechanisms (from the IBM Generative AI Engineering coursework this project is built on)
 - Retrieval-augmented generation implemented at the mechanics level, not just via a framework
-- Retrieval evaluation methodology (Hit Rate, MRR) rather than anecdotal "it seems to work"
+- Retrieval, indexing, and generation implemented at the mechanics level
 - A complete, tested, documented full-stack deliverable: backend, frontend, tests, evaluation, and deployment-readiness
 
 ---
 
-Built by Tanish Shetty as part of the IBM Generative AI Engineering Professional Certificate portfolio.
+Built by Prashanth as part of the IBM Generative AI Engineering Professional Certificate portfolio.
